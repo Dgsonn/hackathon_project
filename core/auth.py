@@ -14,7 +14,7 @@ class AuthManager:
         conn = self.db.get_connection()
         c = conn.cursor()
         hashed_pw = AuthManager.hash_password(password)
-        c.execute('SELECT id, email, name, avatar FROM users WHERE email = ? AND password = ?', 
+        c.execute('SELECT id, email, name, avatar, role FROM users WHERE email = ? AND password = ?', 
                  (email, hashed_pw))
         user = c.fetchone()
         conn.close()
@@ -23,7 +23,8 @@ class AuthManager:
                 'id': user[0],
                 'email': user[1], 
                 'first_name': user[2].split()[0] if user[2] else '',
-                'last_name': user[2].split()[1] if len(user[2].split()) > 1 else ''
+                'last_name': user[2].split()[1] if len(user[2].split()) > 1 else '',
+                'role': user[4]
             }
         return None
     
@@ -54,7 +55,7 @@ class AuthManager:
     def get_user_by_id(self, user_id):
         conn = self.db.get_connection()
         c = conn.cursor()
-        c.execute('SELECT id, email, name, avatar FROM users WHERE id = ?', (user_id,))
+        c.execute('SELECT id, email, name, avatar, role FROM users WHERE id = ?', (user_id,))
         user = c.fetchone()
         conn.close()
         if user:
@@ -62,7 +63,8 @@ class AuthManager:
                 'id': user[0],
                 'email': user[1], 
                 'first_name': user[2].split()[0] if user[2] else '',
-                'last_name': user[2].split()[1] if len(user[2].split()) > 1 else ''
+                'last_name': user[2].split()[1] if len(user[2].split()) > 1 else '',
+                'role': user[4]
             }
         return None
     
